@@ -6,7 +6,7 @@ Propuesta de justicia e inclusión social y política. Actividad final del curso
 **Equipo:** Laura Andrea Betancur · Silvana Cuartas · María José Rosas
 
 ## Cómo verla
-Abre `index.html` en el navegador. Es una presentación de 23 diapositivas con animaciones; las imágenes van incrustadas en el archivo.
+Abre `index.html` en el navegador. Es una presentación de 22 diapositivas con animaciones; las imágenes van incrustadas en el archivo.
 
 - Clic, `→` o `Espacio`: siguiente diapositiva
 - `←`: diapositiva anterior
