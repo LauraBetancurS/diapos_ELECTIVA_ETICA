@@ -659,7 +659,7 @@ body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity 
 @media (max-width:760px){#ayuda{display:none}}
 #girar{display:none}
 @media (orientation:portrait) and (max-width:820px){
-  #girar{display:flex;position:fixed;left:16px;right:16px;top:28px;z-index:9;align-items:center;gap:14px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);color:#fff;border-radius:16px;padding:14px 16px;font-size:14.5px;line-height:1.4;font-weight:600}
+  body.tactil #girar{display:flex;position:fixed;left:16px;right:16px;top:28px;z-index:9;align-items:center;gap:14px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);color:#fff;border-radius:16px;padding:14px 16px;font-size:14.5px;line-height:1.4;font-weight:600}
   #girar .ico{flex:none;font-size:26px;display:inline-block;animation:girarCel 2.4s ease-in-out infinite}
   #girar b{color:var(--amarillo)}
 }
@@ -1132,6 +1132,7 @@ body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity 
 <script>
 (function(){
   var escena=document.getElementById('escena');
+  var tactil=window.matchMedia&&window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   var slides=[].slice.call(document.querySelectorAll('.slide'));
   var actual=0;
   var barra=document.getElementById('progreso');
@@ -1250,10 +1251,24 @@ body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity 
   });
   document.getElementById('next').onclick=sig;
   document.getElementById('prev').onclick=ant;
+  // Pantalla completa: estándar + prefijo webkit (Safari/iPad). Si el navegador no la permite (iPhone), se oculta el botón.
+  var raiz=document.documentElement;
+  var puedeCompleta=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+  function enCompleta(){ return document.fullscreenElement||document.webkitFullscreenElement; }
   function pantalla(){
-    try{ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }catch(e){}
+    try{
+      if(!enCompleta()){
+        var pr=raiz.requestFullscreen?raiz.requestFullscreen():(raiz.webkitRequestFullscreen&&raiz.webkitRequestFullscreen());
+        // En celular, al entrar en pantalla completa se intenta girar a horizontal
+        if(tactil&&pr&&pr.then) pr.then(function(){ try{ screen.orientation.lock('landscape').catch(function(){}); }catch(e){} }).catch(function(){});
+      } else {
+        if(document.exitFullscreen) document.exitFullscreen(); else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    }catch(e){}
   }
   document.getElementById('full').onclick=pantalla;
+  if(!puedeCompleta) document.getElementById('full').style.display='none';
+  document.addEventListener('fullscreenchange',escalar); document.addEventListener('webkitfullscreenchange',escalar);
 
   // Deslizar en pantallas táctiles
   var x0=null;
@@ -1264,6 +1279,13 @@ body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity 
   });
 
   // Ocultar ayuda tras unos segundos
+  // Textos de ayuda según el dispositivo: en celular/tableta no se mencionan teclas
+  if(tactil){
+    document.body.classList.add('tactil');
+    document.getElementById('ayuda').textContent='Desliza para cambiar de diapositiva · toca ☰ Índice para saltar';
+    document.querySelector('#indice .ind-pie').textContent='Toca una diapositiva para ir directo';
+    btnInd.removeAttribute('title'); document.getElementById('full').title='Pantalla completa';
+  }
   setTimeout(function(){ document.getElementById('ayuda').style.opacity='0'; },6000);
 
   // Demo "Ponte en su lugar"
