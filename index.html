@@ -461,8 +461,10 @@ table.ind{width:100%;border-collapse:collapse;background:var(--blanco);color:var
 .burbuja::after{border-top-color:var(--bg)}
 .burbuja.cola-izq::after{left:-6px;top:50%;bottom:auto;margin-top:-6px;border:6px solid transparent;border-right-color:var(--bg);border-left:0}
 .burbuja.cola-arriba::after{top:-6px;bottom:auto;left:22px;border:6px solid transparent;border-bottom-color:var(--bg);border-top:0}
-.nivel{grid-template-columns:190px 1fr}
-.mini-escena .pj{left:0;width:84px;height:168px}
+.nivel{grid-template-columns:200px 1fr;gap:14px}
+.nivel.manual{grid-template-columns:132px 1fr}
+.mini-escena .pj{left:58px;width:84px;height:168px}
+.burbuja.cola-der::after{left:auto;right:-6px;top:50%;bottom:auto;margin-top:-6px;border:6px solid transparent;border-left-color:var(--bg);border-right:0}
 
 /* Fuentes enlazadas */
 a.fuente{color:inherit;text-decoration:underline;text-decoration-color:rgba(84,84,233,.4);text-decoration-thickness:2px;text-underline-offset:3px}
@@ -559,6 +561,28 @@ a.pildora:hover{background:var(--azul) !important;color:#fff !important}
 #hud button{width:38px;height:38px;border-radius:50%;background:rgba(30,27,58,.8);color:#fff;font-size:18px;display:grid;place-items:center;transition:background .2s}
 #hud button:hover{background:var(--azul)}
 #contador{min-width:62px;text-align:center;letter-spacing:.06em;background:rgba(30,27,58,.8);border-radius:99px;padding:9px 10px}
+/* ---------- Índice ---------- */
+#hud .btn-indice{width:auto;border-radius:99px;padding:0 16px 0 12px;font-size:13.5px;font-weight:800;gap:8px;display:flex;align-items:center}
+#hud .btn-indice[aria-expanded="true"]{background:var(--amarillo);color:var(--azul)}
+#indice-fondo{position:fixed;inset:0;background:rgba(14,14,34,.45);z-index:20;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+#indice{position:fixed;top:0;left:0;bottom:0;width:min(380px,92vw);background:var(--tinta);color:#fff;z-index:21;transform:translateX(-102%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;box-shadow:20px 0 60px rgba(0,0,0,.35);font-family:var(--fuente)}
+#indice{visibility:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),visibility 0s .35s}
+body.menu-abierto #indice{transform:none;visibility:visible;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity .3s}
+#indice .ind-cab{display:flex;align-items:center;justify-content:space-between;padding:22px 22px 14px}
+#indice .ind-cab .fvtag{font-size:15px}
+#indice .cerrar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:grid;place-items:center}
+#indice .cerrar:hover{background:rgba(255,255,255,.2)}
+#indice .ind-lista{overflow-y:auto;padding:4px 14px 24px;flex:1}
+#indice .ind-sec{margin:14px 8px 6px;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--amarillo)}
+#indice .ind-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:8px 10px;border-radius:12px;font-size:15px;font-weight:600;color:rgba(255,255,255,.88);transition:background .15s}
+#indice .ind-item:hover{background:rgba(255,255,255,.08);color:#fff}
+#indice .ind-item .n{flex:none;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:12px;font-weight:800}
+#indice .ind-item.actual{background:var(--azul);color:#fff}
+#indice .ind-item.actual .n{background:var(--amarillo);color:var(--azul)}
+#indice .ind-pie{padding:12px 22px 18px;font-size:12px;color:rgba(255,255,255,.55);border-top:1px solid rgba(255,255,255,.08)}
+.volver{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;background:var(--azul);color:#fff;font-weight:800;font-size:16px;padding:12px 22px;border-radius:99px;box-shadow:3px 5px 0 rgba(0,0,40,.18);transition:transform .15s,background .2s}
+.volver:hover{background:var(--azul-osc);transform:translateY(-2px)}
 #ayuda{position:fixed;left:20px;bottom:20px;color:rgba(255,255,255,.55);font-size:12.5px;font-weight:600;z-index:10;transition:opacity .6s}
 </style>
 </head>
@@ -635,9 +659,9 @@ a.pildora:hover{background:var(--azul) !important;color:#fff !important}
       <div class="encabezado"><span class="etq">Nivel 1 · Entre pares</span><h3 style="margin:0">La burla</h3></div>
       <div class="mini-escena">
         <div class="pj" data-p="piel:#E0AC69,pelo:largo,colPelo:#3B2314,top:#E4EB60,bottom:#1E1B3A,ropa:pantalon,aretes:1,unas:1,expr:triste"></div>
-        <span class="burbuja cola-izq" data-a="sello" style="--i:5;left:88px;top:22px">jajaja</span>
-        <span class="burbuja cola-izq" data-a="sello" style="--i:7;left:88px;top:62px">¿princesa?</span>
-        <span class="burbuja cola-izq" data-a="sello" style="--i:9;left:88px;top:102px">😂</span>
+        <span class="burbuja cola-der" data-a="sello" style="--i:5;left:0;top:62px;--r:-5deg">jajaja</span>
+        <span class="burbuja" data-a="sello" style="--i:7;left:94px;top:4px;--r:3deg">¿princesa?</span>
+        <span class="burbuja cola-izq" data-a="sello" style="--i:9;left:150px;top:104px;--r:6deg">😂</span>
       </div>
       <ul>
         <li>Chistes y apodos por uñas pintadas, aretes, pelo largo o colores "de niña".</li>
@@ -645,7 +669,7 @@ a.pildora:hover{background:var(--azul) !important;color:#fff !important}
         <li>Presión para "corregirse" y no ser rechazado.</li>
       </ul>
     </div>
-    <div class="nivel" data-a="giro" style="--i:3;--r:.6deg;transform:rotate(.6deg)">
+    <div class="nivel manual" data-a="giro" style="--i:3;--r:.6deg;transform:rotate(.6deg)">
       <div class="encabezado"><span class="etq">Nivel 2 · Institucional</span><h3 style="margin:0">El manual de convivencia</h3></div>
       <div class="mini-escena ilus">
         <svg viewBox="0 0 150 200" width="120" height="160" aria-hidden="true">
@@ -883,7 +907,7 @@ a.pildora:hover{background:var(--azul) !important;color:#fff !important}
 </section>
 
 <!-- 16 · PASO 3 · REESCRIBE -->
-<section class="slide" aria-label="Ciudad República escolar">
+<section class="slide" aria-label="Paso 3: Reescribe la norma">
   <div class="cab" data-a="sube"><span class="num">3 · La propuesta</span><span class="tracker"><b>1 · Explora</b><b>2 · Mapea</b><b class="on">3 · Reescribe</b></span></div>
   <h2 class="h2" data-a="sube" style="--i:1;margin-bottom:24px">Paso 3 · Reescribe la norma, entre todos</h2>
   <div class="republica">
@@ -1006,12 +1030,19 @@ a.pildora:hover{background:var(--azul) !important;color:#fff !important}
     <p>Takahashi, R. (1989). <i>Ranma ½</i> [Serie animada, episodio "Ranma se convirtió en mujer"]. Kitty Films.</p>
     <p>DiMartino, M. D. y Konietzko, B. (Creadores). (2005–2008). <i>Avatar: la leyenda de Aang</i> ["El pañuelo en la cabeza"; "La gran división"]. Nickelodeon.</p>
   </div>
+  <button class="volver" id="volver-inicio" data-a="sube" style="--i:4"><span aria-hidden="true">↺</span>Volver al inicio</button>
 </section>
 
 </main>
 
-<div id="hud"><button id="prev" aria-label="Diapositiva anterior">←</button><span id="contador">1 / 22</span><button id="next" aria-label="Diapositiva siguiente">→</button><button id="full" aria-label="Pantalla completa" title="Pantalla completa (F)">⛶</button></div>
-<div id="ayuda">Clic o → para avanzar · ← para volver · F pantalla completa</div>
+<div id="hud"><button id="btn-indice" class="btn-indice" aria-expanded="false" aria-controls="indice" title="Índice (M)"><span aria-hidden="true">☰</span>Índice</button><button id="prev" aria-label="Diapositiva anterior">←</button><span id="contador">1 / 22</span><button id="next" aria-label="Diapositiva siguiente">→</button><button id="full" aria-label="Pantalla completa" title="Pantalla completa (F)">⛶</button></div>
+<div id="ayuda">Clic o → para avanzar · ← para volver · M índice · F pantalla completa</div>
+<div id="indice-fondo"></div>
+<nav id="indice" aria-label="Índice de la presentación" aria-hidden="true">
+  <div class="ind-cab"><span class="fvtag">Índice</span><button class="cerrar" id="cerrar-indice" aria-label="Cerrar índice">✕</button></div>
+  <div class="ind-lista" id="ind-lista"></div>
+  <div class="ind-pie">Elige una diapositiva para ir directo · M o Esc para cerrar</div>
+</nav>
 
 <script>
 (function(){
@@ -1084,15 +1115,44 @@ a.pildora:hover{background:var(--azul) !important;color:#fff !important}
     barra.style.width=((actual+1)/slides.length*100)+'%';
     contador.textContent=(actual+1)+' / '+slides.length;
     try{ history.replaceState(null,'','#'+(actual+1)); }catch(e){}
+    if(typeof marcarIndice==='function') marcarIndice();
   }
   function sig(){ ir(actual+1); } function ant(){ ir(actual-1); }
 
+  // ---- Índice ----
+  var secciones={0:'Inicio',2:'1 · El problema',6:'2 · Nuestra mirada',12:'3 · La propuesta',17:'4 · Cómo lo hacemos realidad',20:'Cierre'};
+  var lista=document.getElementById('ind-lista'), btnInd=document.getElementById('btn-indice'), nav=document.getElementById('indice');
+  slides.forEach(function(sl,i){
+    if(secciones[i]){ var h=document.createElement('div'); h.className='ind-sec'; h.textContent=secciones[i]; lista.appendChild(h); }
+    var b=document.createElement('button'); b.className='ind-item'; b.dataset.n=i;
+    b.innerHTML='<span class="n">'+(i+1)+'</span><span></span>'; b.lastChild.textContent=sl.getAttribute('aria-label')||('Diapositiva '+(i+1));
+    b.onclick=function(){ ir(i); menu(false); };
+    lista.appendChild(b);
+  });
+  function marcarIndice(){
+    lista.querySelectorAll('.ind-item').forEach(function(b){ b.classList.toggle('actual', +b.dataset.n===actual); });
+  }
+  function menu(abrir){
+    if(abrir===undefined) abrir=!document.body.classList.contains('menu-abierto');
+    document.body.classList.toggle('menu-abierto',abrir);
+    btnInd.setAttribute('aria-expanded',abrir); nav.setAttribute('aria-hidden',!abrir);
+    if(abrir){ marcarIndice(); var a=lista.querySelector('.actual'); if(a) a.scrollIntoView({block:'center'}); }
+  }
+  btnInd.onclick=function(){ menu(); };
+  document.getElementById('cerrar-indice').onclick=function(){ menu(false); };
+  document.getElementById('indice-fondo').onclick=function(){ menu(false); };
+  document.getElementById('volver-inicio').onclick=function(){ ir(0); };
+
   document.addEventListener('click',function(e){
-    if(e.target.closest('button,a,[data-interactivo],#hud')) return;
+    if(e.target.closest('button,a,[data-interactivo],#hud,#indice,#indice-fondo')) return;
+    if(document.body.classList.contains('menu-abierto')) return;
     sig();
   });
   document.addEventListener('contextmenu',function(e){ e.preventDefault(); ant(); });
   document.addEventListener('keydown',function(e){
+    if(e.key==='m'||e.key==='M'||e.key==='i'||e.key==='I'){ menu(); return; }
+    if(e.key==='Escape'&&document.body.classList.contains('menu-abierto')){ menu(false); return; }
+    if(document.body.classList.contains('menu-abierto')) return;
     if(['ArrowRight','PageDown',' ','Enter'].indexOf(e.key)>-1){ e.preventDefault(); sig(); }
     else if(['ArrowLeft','PageUp','Backspace'].indexOf(e.key)>-1){ e.preventDefault(); ant(); }
     else if(e.key==='Home'){ ir(0); } else if(e.key==='End'){ ir(slides.length-1); }
