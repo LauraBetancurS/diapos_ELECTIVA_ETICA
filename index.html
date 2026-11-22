@@ -650,6 +650,20 @@ body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity 
 #indice .ind-pie{padding:12px 22px 18px;font-size:12px;color:rgba(255,255,255,.55);border-top:1px solid rgba(255,255,255,.08)}
 .volver{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;background:var(--azul);color:#fff;font-weight:800;font-size:16px;padding:12px 22px;border-radius:99px;box-shadow:3px 5px 0 rgba(0,0,40,.18);transition:transform .15s,background .2s}
 .volver:hover{background:var(--azul-osc);transform:translateY(-2px)}
+@media (max-height:480px),(max-width:520px){
+  #hud{right:8px;bottom:8px;gap:6px}
+  #hud button{width:34px;height:34px;font-size:16px}
+  #hud .btn-indice{padding:0 12px 0 10px;font-size:13px}
+  #contador{min-width:54px;padding:8px 8px;font-size:12px}
+}
+@media (max-width:760px){#ayuda{display:none}}
+#girar{display:none}
+@media (orientation:portrait) and (max-width:820px){
+  #girar{display:flex;position:fixed;left:16px;right:16px;top:28px;z-index:9;align-items:center;gap:14px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);color:#fff;border-radius:16px;padding:14px 16px;font-size:14.5px;line-height:1.4;font-weight:600}
+  #girar .ico{flex:none;font-size:26px;display:inline-block;animation:girarCel 2.4s ease-in-out infinite}
+  #girar b{color:var(--amarillo)}
+}
+@keyframes girarCel{0%,30%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
 #ayuda{position:fixed;left:20px;bottom:20px;color:rgba(255,255,255,.55);font-size:12.5px;font-weight:600;z-index:10;transition:opacity .6s}
 </style>
 </head>
@@ -1107,6 +1121,7 @@ body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity 
 
 <div id="hud"><button id="btn-indice" class="btn-indice" aria-expanded="false" aria-controls="indice" title="Índice (M)"><span aria-hidden="true">☰</span>Índice</button><button id="prev" aria-label="Diapositiva anterior">←</button><span id="contador">1 / 22</span><button id="next" aria-label="Diapositiva siguiente">→</button><button id="full" aria-label="Pantalla completa" title="Pantalla completa (F)">⛶</button></div>
 <div id="ayuda">Clic o → para avanzar · ← para volver · M índice · F pantalla completa</div>
+<div id="girar" role="note"><span class="ico" aria-hidden="true">📱</span><span><b>Gira la pantalla</b> para ver la presentación más grande. Desliza o toca para avanzar.</span></div>
 <div id="indice-fondo"></div>
 <nav id="indice" aria-label="Índice de la presentación" aria-hidden="true">
   <div class="ind-cab"><span class="fvtag">Índice</span><button class="cerrar" id="cerrar-indice" aria-label="Cerrar índice">✕</button></div>
@@ -1170,7 +1185,12 @@ body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity 
   });
 
   function escalar(){
-    var k=Math.min(window.innerWidth/1280,window.innerHeight/720)*0.96;
+    // Se reserva una franja abajo para los botones, así nunca tapan la diapositiva
+    var W=window.innerWidth, H=window.innerHeight;
+    var franja=(H<=480||W<=520)?50:66;
+    var alto=H-franja-6;
+    var k=Math.min((W-16)/1280,alto/720);
+    escena.style.top=(6+alto/2)+'px';
     escena.style.transform='translate(-50%,-50%) scale('+k+')';
   }
   window.addEventListener('resize',escalar); escalar();
@@ -1206,7 +1226,7 @@ body.menu-abierto #indice-fondo{opacity:1;visibility:visible;transition:opacity 
     if(abrir===undefined) abrir=!document.body.classList.contains('menu-abierto');
     document.body.classList.toggle('menu-abierto',abrir);
     btnInd.setAttribute('aria-expanded',abrir); nav.setAttribute('aria-hidden',!abrir);
-    if(abrir){ marcarIndice(); var a=lista.querySelector('.actual'); if(a) a.scrollIntoView({block:'center'}); }
+    if(abrir){ marcarIndice(); var a=lista.querySelector('.actual'); if(a) lista.scrollTop=a.offsetTop-lista.offsetTop-lista.clientHeight/2+a.offsetHeight/2; }
   }
   btnInd.onclick=function(){ menu(); };
   document.getElementById('cerrar-indice').onclick=function(){ menu(false); };
